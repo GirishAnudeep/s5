@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2016.4 (64-bit)
+# SW Build 1733598 on Wed Dec 14 22:35:39 MST 2016
+# IP Build 1731160 on Wed Dec 14 23:47:21 MST 2016
+# Start of session at: Tue Nov 06 14:43:47 2018
+# Process ID: 4232
+# Current directory: C:/Users/klu/Desktop/baseshankaar/project_10/project_10.runs/synth_1
+# Command line: vivado.exe -log mark1.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mark1.tcl
+# Log file: C:/Users/klu/Desktop/baseshankaar/project_10/project_10.runs/synth_1/mark1.vds
+# Journal file: C:/Users/klu/Desktop/baseshankaar/project_10/project_10.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source mark1.tcl -notrace
