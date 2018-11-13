@@ -1,14 +1,31 @@
 `timescale 1ns / 1ps
 
-module mark1(A,B,prod);
+module mark1(
         
         //inputs and outputs
-        input [3:0] A,B;
-        output [7:0] prod;
+        input clock_100Mhz,
+       // input [3:0] A,B;
+        reset,
+        [14:0] sw,
+        //output  [15:0] prod,
+        output reg [3:0] AN,
+        output reg [6:0] led
+    );
         //internal variables.
+        wire [3:0] A,B;
+        wire [15:0] prod;
         wire s11,s12,s13,s14,s15,s22,s23,s24,s25,s26,s32,s33,s34,s35,s36,s37;
         wire c11,c12,c13,c14,c15,c22,c23,c24,c25,c26,c32,c33,c34,c35,c36,c37;
         wire [6:0] p0,p1,p2,p3;
+        wire [1:0] LED_activating_counter; 
+        reg [19:0] refresh_counter; 
+        
+        reg [3:0] LED_BCD;
+
+        
+        	assign A[3:0]=sw[3:0];
+        	assign B[3:0]=sw[7:4];
+
     
     //initialize the p's.
         assign  p0 = A & {4{B[0]}};
@@ -46,6 +63,65 @@ module mark1(A,B,prod);
         half_adder ha35(c34,s25,s35,c35);
         half_adder ha36(c35,s26,s36,c36);
         half_adder ha37(c36,c26,s37,c37);
-    
+       assign prod[15:8]=8'b00000000;
+
+    always @(posedge clock_100Mhz or posedge reset)
+	begin 
+		if(reset==1)
+			refresh_counter <= 0;
+		else
+			refresh_counter <= refresh_counter + 1;
+	end 
+	assign LED_activating_counter = refresh_counter[19:18];
+	always @(*)
+    begin
+        case(LED_activating_counter)
+        2'b00: begin
+            AN = 4'b0111; 
+           // activate LED1 and Deactivate LED2, LED3, LED4
+            LED_BCD = prod/1000;
+            // the first digit of the 16-bit number
+              end
+        2'b01: begin
+            AN = 4'b1011; 
+            // activate LED2 and Deactivate LED1, LED3, LED4
+            LED_BCD = (prod % 1000)/100;
+            // the second digit of the 16-bit number
+              end
+        2'b10: begin
+            AN = 4'b1101; 
+            // activate LED3 and Deactivate LED2, LED1, LED4
+            LED_BCD = ((prod % 1000)%100)/10;
+            // the third digit of the 16-bit number
+                end
+        2'b11: begin
+            AN = 4'b1110; 
+            // activate LED4 and Deactivate LED2, LED3, LED1
+            LED_BCD = ((prod % 1000)%100)%10;
+            // the fourth digit of the 16-bit number    
+               end
+        endcase
+    end
+
+	always @(*)
+	begin
+		case(LED_BCD)
+			4'b0000: led = 7'b0000001; // "0"  
+			4'b0001: led = 7'b1001111; // "1" 
+			4'b0010: led = 7'b0010010; // "2" 
+			4'b0011: led = 7'b0000110; // "3" 
+			4'b0100: led = 7'b1001100; // "4" 
+			4'b0101: led = 7'b0100100; // "5" 
+			4'b0110: led = 7'b0100000; // "6" 
+			4'b0111: led = 7'b0001111; // "7" 
+			4'b1000: led = 7'b0000000; // "8"  
+			4'b1001: led = 7'b0000100; // "9" 
+			default: led = 7'b0000001; // "0"
+		endcase
+	end
+    always@(*)
+    begin
+
+    end
     endmodule
 
