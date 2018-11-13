@@ -9,7 +9,8 @@ module mark1(
         [14:0] sw,
         //output  [15:0] prod,
         output reg [3:0] AN,
-        output reg [6:0] led
+        output reg [6:0] led,
+        output  reg [14:0] dis
     );
         //internal variables.
         wire [3:0] A,B;
@@ -64,6 +65,8 @@ module mark1(
         half_adder ha36(c35,s26,s36,c36);
         half_adder ha37(c36,c26,s37,c37);
        assign prod[15:8]=8'b00000000;
+       
+       
 
     always @(posedge clock_100Mhz or posedge reset)
 	begin 
@@ -121,7 +124,7 @@ module mark1(
 	end
     always@(*)
     begin
-
+       dis[14:0]=sw[14:0];
     end
     endmodule
 
